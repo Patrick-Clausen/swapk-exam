@@ -6,5 +6,5 @@ find_package(Threads REQUIRED)
 
 set(CMAKE_CXX_STANDARD 17)
 
-add_executable(swapk_exam main.cpp SocketListener.cpp SocketListener.h ExceptionHandler.h HTTPParser.h Dispatcher.h HTTPCall.h)
+add_executable(swapk_exam main.cpp)
 target_link_libraries(swapk_exam PRIVATE Threads::Threads)
