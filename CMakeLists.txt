@@ -1,6 +1,10 @@
 cmake_minimum_required(VERSION 3.0)
 project(swapk_exam)
 
+set(THREADS_PREFER_PTHREAD_FLAG ON)
+find_package(Threads REQUIRED)
+
 set(CMAKE_CXX_STANDARD 17)
 
 add_executable(swapk_exam main.cpp)
+target_link_libraries(swapk_exam PRIVATE Threads::Threads)
