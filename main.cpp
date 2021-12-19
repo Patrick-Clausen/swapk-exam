@@ -1,12 +1,12 @@
-#include <iostream>
-#include "Dispathcer/Dispatcher.h"
-#include "Controllers/WeatherController.h"
+#include <boost/asio.hpp>
+#include "SocketManager.h"
+
+using namespace boost::asio;
 
 int main() {
-    auto wc = WeatherController();
-    auto d = Dispatcher();
-    d.registerController(wc);
-    d.dispatch("weather", "POST");
+    SocketManager manager(ip::tcp::endpoint(ip::tcp::v4(), 80));
+    for(;;) {
 
+    }
     return 0;
 }
