@@ -10,7 +10,6 @@
 struct HTTPResponse : public HTTPCall {
     std::string statusMessage;
     std::string statusCode;
-    std::string protocolVersion;
 };
 
 #endif //SWAPK_EXAM_HTTPRESPONSE_H

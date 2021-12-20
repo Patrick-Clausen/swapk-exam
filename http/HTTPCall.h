@@ -6,11 +6,13 @@
 #define SWAPK_EXAM_HTTPCALL_H
 
 #include <map>
+#include "HTTPEnums.h"
 
 typedef std::map<std::string,std::string> Headers;
 
 class HTTPCall {
 public:
+    ProtocolVersion protocolVersion;
     Headers headers;
     std::string body;
 };

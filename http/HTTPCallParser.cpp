@@ -4,6 +4,7 @@
 
 #include "HTTPCallParser.h"
 
+#include "HTTPEnums.h"
 #include <sstream>
 #include <algorithm>
 
@@ -73,22 +74,25 @@ std::queue<std::string> HTTPCallParser::splitStringByNewLine(std::string stringT
 void HTTPCallParser::parseAndAddStatus(const std::string& statusLine, HTTPRequest &httpRequest) {
     char delimiter = ' ';
     std::string substr;
+    std::string tmp;
     std::stringstream stream;
     stream << statusLine;
 
     // METHOD
-    std::getline(stream, httpRequest.method, delimiter);
+    std::getline(stream, tmp, delimiter);
+    httpRequest.method = getEnumValueFromString<RequestMethod>(tmp);
 
     // PATH
     std::getline(stream, httpRequest.path, delimiter);
 
     // PROTOCOL VERSION
-    std::getline(stream, httpRequest.protocolVersion, delimiter);
+    std::getline(stream, tmp, delimiter);
+    httpRequest.protocolVersion = getEnumValueFromString<ProtocolVersion>(tmp);
 }
 
 std::string HTTPCallParser::stringifyStatusline(const HTTPResponse &httpResponse) {
     char delimiter = ' ';
     std::stringstream builder;
-    builder << httpResponse.protocolVersion << delimiter << httpResponse.statusCode << delimiter << httpResponse.statusMessage;
+    builder << getStringFromEnumValue(httpResponse.protocolVersion) << delimiter << httpResponse.statusCode << delimiter << httpResponse.statusMessage;
     return builder.str();
 }
