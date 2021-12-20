@@ -4,7 +4,10 @@
 //https://developer.mozilla.org/en-US/docs/Web/HTTP/Overview
 #ifndef SWAPK_EXAM_HTTPCALL_H
 #define SWAPK_EXAM_HTTPCALL_H
+
 #include <map>
+#include <iostream>
+
 typedef std::map<std::string,std::string> Headers;
 
 class HttpCall {

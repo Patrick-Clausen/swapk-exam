@@ -15,14 +15,14 @@ struct HttpResponse : public HttpCall {
     std::string protocolVersion;
 
     friend std::ostream &operator<<( std::ostream &output, const HttpResponse &httpResponse ) {
-        output << httpResponse.protocolVersion << " " << httpResponse.statusCode << " " << httpResponse.statusMessage << std::endl;
+        output << httpResponse.protocolVersion << " " << httpResponse.statusCode << " " << httpResponse.statusMessage << "\r\n";
 
         for (auto it = httpResponse.headers.begin(); it != httpResponse.headers.end(); it++)
         {
-            output << it->first << ": " << it->second << std::endl;
+            output << it->first << ": " << it->second << "\r\n";
         }
 
-        output << httpResponse.body;
+        output << "\r\n" << httpResponse.body;
 
         return output;
     }
