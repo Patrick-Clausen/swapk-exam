@@ -6,20 +6,16 @@
 #define SWAPK_EXAM_HTTPCALLHANDLER_H
 
 #include <iostream>
-#include "HttpCallParser.h"
+#include "HTTPCallParser.h"
 #include "../dispatch/Dispatcher.h"
 
 namespace http::call {
     static std::string handleCall(std::string& request) {
-        HttpRequest parsedRequest = HttpCallParser::ParseCallToRequest(request);
+        HTTPRequest parsedRequest = HTTPCallParser::parseRequest(request);
 
-        HttpResponse response = Dispatcher::dispatch(parsedRequest);
+        HTTPResponse response = Dispatcher::dispatch(parsedRequest);
 
-        std::stringstream ss;
-
-        ss << response;
-
-        return ss.str();
+        return HTTPCallParser::stringifyResponse(response);
     }
 }
 
