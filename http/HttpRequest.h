@@ -14,12 +14,14 @@ struct HttpRequest : public HttpCall {
     std::string protocolVersion;
 
     friend std::ostream &operator<<( std::ostream &output, const HttpRequest &httpRequest ) {
-        output << httpRequest.method << " " << httpRequest.path << " " << httpRequest.protocolVersion << std::endl;
+        output << httpRequest.method << " " << httpRequest.path << " " << httpRequest.protocolVersion << "\r\n";
 
         for (auto it = httpRequest.headers.begin(); it != httpRequest.headers.end(); it++)
         {
-            output << it->first << ": " << it->second << std::endl;
+            output << it->first << ": " << it->second << "\r\n";
         }
+
+        output << "\r\n";
 
         output << httpRequest.body;
 

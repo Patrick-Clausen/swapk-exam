@@ -15,12 +15,12 @@
 
 class HttpCallParser {
 public:
-    HttpRequest ParseCallToRequest(const std::string& httpRequestString);
-    HttpResponse ParseCallToResponse(const std::string& httpResponseString);
+    static HttpRequest ParseCallToRequest(const std::string& httpRequestString);
+    static HttpResponse ParseCallToResponse(const std::string& httpResponseString);
 
 private:
-    void AddHeadersAndBody(std::queue<std::string> &httpCallStringArray, HttpCall &httpCall);
-    std::queue<std::string> SplitStringByNewLine(const std::string& stringToSplit);
+    static void AddHeadersAndBody(std::queue<std::string> &httpCallStringArray, HttpCall &httpCall);
+    static std::queue<std::string> SplitStringByNewLine(const std::string& stringToSplit);
 };
 
 HttpRequest HttpCallParser::ParseCallToRequest(const std::string& httpRequestString) {
@@ -67,12 +67,14 @@ void HttpCallParser::AddHeadersAndBody(std::queue<std::string> &httpCallStringAr
         if(httpCallStringArray.front().empty())
         {
             httpCallStringArray.pop();
-            httpCall.body = httpCallStringArray.front();
-            httpCallStringArray.pop();
-            while(!httpCallStringArray.empty()) {
-                httpCall.body = httpCall.body.append(" ");
-                httpCall.body = httpCall.body.append(httpCallStringArray.front());
+            if(!httpCallStringArray.empty()) {
+                httpCall.body = httpCallStringArray.front();
                 httpCallStringArray.pop();
+                while(!httpCallStringArray.empty()) {
+                    httpCall.body = httpCall.body.append(" ");
+                    httpCall.body = httpCall.body.append(httpCallStringArray.front());
+                    httpCallStringArray.pop();
+                }
             }
             break;
         }
@@ -87,7 +89,12 @@ void HttpCallParser::AddHeadersAndBody(std::queue<std::string> &httpCallStringAr
 }
 
 std::queue<std::string> HttpCallParser::SplitStringByNewLine(const std::string& stringToSplit) {
-    std::stringstream ss(stringToSplit);
+
+    std::string tempStringToSplit = stringToSplit;
+    //REMOVE \r arrrrggghhhh - https://stackoverflow.com/questions/2528995/remove-r-from-a-string-in-c
+    tempStringToSplit.erase( std::remove(tempStringToSplit.begin(), tempStringToSplit.end(), '\r'), tempStringToSplit.end() );
+
+    std::stringstream ss(tempStringToSplit);
     std::string tempString;
     std::queue<std::string> strings;
 
@@ -95,6 +102,7 @@ std::queue<std::string> HttpCallParser::SplitStringByNewLine(const std::string& 
     {
         strings.push(tempString);
     }
+
     return strings;
 }
 

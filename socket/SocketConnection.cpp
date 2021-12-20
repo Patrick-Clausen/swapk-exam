@@ -3,7 +3,7 @@
 //
 
 #include "SocketConnection.h"
-
+#include "../http/HTTPCallHandler.h"
 #include <iostream>
 
 using namespace boost::asio;
@@ -15,11 +15,9 @@ SocketConnection::SocketConnection(ip::tcp::socket *socket)
 void SocketConnection::threadFunction() {
     std::string message = read(*_socket);
 
-    std::cout << "READING FROM SOCKET AT ADDRESS: " << _socket << std::endl;
-    std::cout << message << std::endl;
+    std::string response = http::call::handleCall(message);
 
-    std::cout << "REPLYING..." << std::endl;
-    write(*_socket, "HTTP/1.1 200 OK\r\n\r\nHello\r\n");
+    write(*_socket, response);
     _completionSignal(this);
 }
 
