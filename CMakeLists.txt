@@ -5,6 +5,6 @@ set(THREADS_PREFER_PTHREAD_FLAG ON)
 find_package(Threads REQUIRED)
 set(CMAKE_CXX_STANDARD 17)
 
-add_executable(swapk_exam main.cpp HttpRequest.h HttpResponse.h HttpCall.h HttpCallParser.h)
+add_executable(swapk_exam main.cpp HttpTypes/HttpRequest.h HttpTypes/HttpResponse.h HttpTypes/HttpCall.h HttpTypes/HttpCallParser.h)
 target_link_libraries(swapk_exam PRIVATE Threads::Threads)
 set_target_properties(swapk_exam PROPERTIES LINKER_LANGUAGE CXX)
