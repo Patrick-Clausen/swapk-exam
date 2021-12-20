@@ -7,12 +7,12 @@
 
 #include <iostream>
 
-#include "../http/HttpRequest.h"
-#include "../http/HttpResponse.h"
+#include "../http/HTTPRequest.h"
+#include "../http/HTTPResponse.h"
 
 class Dispatcher {
 public:
-    static HttpResponse dispatch(HttpRequest request) {
+    static HTTPResponse dispatch(HTTPRequest request) {
         std::cout << "REQUEST RECEIVED" << std::endl;
         std::cout << "PROTOCOL VERSION: " << request.protocolVersion << std::endl;
         std::cout << "METHOD: " << request.method << std::endl;
@@ -22,7 +22,7 @@ public:
         }
         std::cout << "CONTENT: " << request.body << std::endl;
 
-        HttpResponse response;
+        HTTPResponse response;
         response.protocolVersion = request.protocolVersion;
         response.statusCode = "200";
         response.statusMessage = "OK";

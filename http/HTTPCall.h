@@ -6,15 +6,13 @@
 #define SWAPK_EXAM_HTTPCALL_H
 
 #include <map>
-#include <iostream>
 
 typedef std::map<std::string,std::string> Headers;
 
-class HttpCall {
+class HTTPCall {
 public:
     Headers headers;
     std::string body;
 };
-
 
 #endif //SWAPK_EXAM_HTTPCALL_H
