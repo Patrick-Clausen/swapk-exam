@@ -2,7 +2,6 @@
 // Created by Patrick Clausen on 22/12/2021.
 //
 
-
 #include "../HTTPCallParser.h"
 #include "../../dispatch/Dispatcher.h"
 #include "HTTPCallHandlerImpl.h"
@@ -21,7 +20,7 @@ std::string http::details::call::HTTPCallHandlerImpl::handleInInstance(const std
     try {
         HTTPRequest parsedRequest = HTTPCallParser::parseRequest(request);
 
-        response = Dispatcher::dispatch(parsedRequest);
+        response = Dispatcher::getDispatcher().dispatch(parsedRequest);
     } catch (std::exception& exception) {
         response = _exceptionHandler.handleException(exception);
     }

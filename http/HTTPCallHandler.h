@@ -7,7 +7,6 @@
 
 #include <iostream>
 #include "HTTPCallParser.h"
-#include "../dispatch/Dispatcher.h"
 #include "details/HTTPCallHandlerImpl.h"
 
 namespace http::call {

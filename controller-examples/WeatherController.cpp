@@ -6,11 +6,11 @@
 
 std::string WeatherController::GET(std::string body) {
     std::cout << "Called get" << std::endl;
-    return body;
+    return "Hello";
 }
 
-/*std::string WeatherController::POST(std::string body) {
+std::string WeatherController::POST(std::string body) {
     std::cout << "Called post" << std::endl;
     return body;
-}*/
+}
 

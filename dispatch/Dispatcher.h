@@ -1,49 +1,78 @@
 //
-// Created by Patrick Clausen on 20/12/2021.
+// Created by einar on 12/17/21.
 //
 
 #ifndef SWAPK_EXAM_DISPATCHER_H
 #define SWAPK_EXAM_DISPATCHER_H
 
-#include <iostream>
-
+#include <string>
+#include <map>
+#include <functional>
 #include "../http/HTTPRequest.h"
 #include "../http/HTTPResponse.h"
 
-#include "../exception/defaults/method_not_allowed_exception.h"
-#include "../exception/defaults/parse_failure_exception.h"
-#include "../exception/defaults/endpoint_not_found_exception.h"
+#include "hasPath.h"
+#include "hasGet.h"
+#include "hasPost.h"
+#include "hasPut.h"
+#include "hasDelete.h"
+#include "detect.h"
 
 class Dispatcher {
 public:
-    static HTTPResponse dispatch(HTTPRequest request) {
-        std::cout << "REQUEST RECEIVED" << std::endl;
-        std::cout << "PROTOCOL VERSION: " << request.protocolVersion << std::endl;
-        std::cout << "METHOD: " << request.method << std::endl;
-        std::cout << "PATH: " << request.path << std::endl;
-        for (auto header : request.headers) {
-            std::cout << "HEADER: " << header.first << " - " << header.second << std::endl;
-        }
-        std::cout << "CONTENT: " << request.body << std::endl;
 
-        if (request.path == "/not-supported" && request.method == RequestMethod::GET) {
-            throw method_not_allowed_exception("not-supported", RequestMethod::GET);
-        }
-        if (request.path == "/not-found") {
-            throw endpoint_not_found_exception("/not-found");
-        }
-        if (request.path == "/parse-failure") {
-            throw parse_failure_exception();
-        }
+    static Dispatcher &getDispatcher() {
+        static Dispatcher dispatcher;
 
-        HTTPResponse response;
-        response.protocolVersion = request.protocolVersion;
-        response.statusCode = "200";
-        response.statusMessage = "OK";
-        response.body = "HEJ TUE!!!!!!11!!!!";
-
-        return response;
+        return dispatcher;
     }
+
+    template<typename T>
+    void registerController(T ctl) {
+        validateControllers<T>();
+        auto path = T::Path();
+
+        if constexpr (detect<hasGet, T, std::string(T::*)(std::string)>::value) {
+            _ctl.insert(
+                    std::make_pair(path, std::unordered_map<std::string, std::function<std::string(std::string)>>()));
+            _ctl[path].insert(std::make_pair(std::string("GET"), std::bind(&T::GET, &ctl, std::placeholders::_1)));
+        }
+
+        if constexpr (detect<hasPost, T, std::string(T::*)(std::string)>::value) {
+            _ctl.insert(
+                    std::make_pair(path, std::unordered_map<std::string, std::function<std::string(std::string)>>()));
+            _ctl[path].insert(std::make_pair("POST", std::bind(&T::POST, &ctl, std::placeholders::_1)));
+        }
+
+        if constexpr (detect<hasDelete, T, std::string(T::*)(std::string)>::value) {
+            _ctl.insert(
+                    std::make_pair(path, std::unordered_map<std::string, std::function<std::string(std::string)>>()));
+            _ctl[path].insert(std::make_pair("DELETE", std::bind(&T::DELETE, &ctl, std::placeholders::_1)));
+        }
+
+        if constexpr (detect<hasPut, T, std::string(T::*)(std::string)>::value) {
+            _ctl.insert(
+                    std::make_pair(path, std::unordered_map<std::string, std::function<std::string(std::string)>>()));
+            _ctl[path].insert(std::make_pair("PUT", std::bind(&T::PUT, &ctl, std::placeholders::_1)));
+        }
+
+    };
+
+    template<typename T>
+    static constexpr void validateControllers() {
+        static_assert(hasPath<T>::value,
+                      "Controller has no path it should be defined like this: [[nodiscard]] static constexpr std::string_view Path() {return ""path"";}");
+        static_assert(detect<hasGet, T, std::string(T::*)(std::string)>::value ||
+                      detect<hasPost, T, std::string(T::*)(std::string)>::value ||
+                      detect<hasDelete, T, std::string(T::*)(std::string)>::value ||
+                      detect<hasPut, T, std::string(T::*)(std::string)>::value,
+                      "Controller has no valid methods");
+    };
+
+    HTTPResponse dispatch(HTTPRequest request);
+
+private:
+    std::unordered_map<std::string_view, std::unordered_map<std::string, std::function<std::string(std::string)>>> _ctl;
 };
 
 #endif //SWAPK_EXAM_DISPATCHER_H

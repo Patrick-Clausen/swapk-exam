@@ -10,8 +10,8 @@ class WeatherController {
 public:
     std::string GET(std::string body);
 
-    //std::string POST(std::string body);
-    [[nodiscard]] static constexpr std::string_view Path() { return "weather"; }
+    std::string POST(std::string body);
+    [[nodiscard]] static constexpr std::string_view Path() { return "/weather"; }
 
 private:
 
