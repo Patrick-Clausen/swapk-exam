@@ -10,6 +10,10 @@
 #include "../http/HTTPRequest.h"
 #include "../http/HTTPResponse.h"
 
+#include "../exception/defaults/method_not_allowed_exception.h"
+#include "../exception/defaults/parse_failure_exception.h"
+#include "../exception/defaults/endpoint_not_found_exception.h"
+
 class Dispatcher {
 public:
     static HTTPResponse dispatch(HTTPRequest request) {
@@ -21,6 +25,16 @@ public:
             std::cout << "HEADER: " << header.first << " - " << header.second << std::endl;
         }
         std::cout << "CONTENT: " << request.body << std::endl;
+
+        if (request.path == "/not-supported" && request.method == RequestMethod::GET) {
+            throw method_not_allowed_exception("not-supported", RequestMethod::GET);
+        }
+        if (request.path == "/not-found") {
+            throw endpoint_not_found_exception("/not-found");
+        }
+        if (request.path == "/parse-failure") {
+            throw parse_failure_exception();
+        }
 
         HTTPResponse response;
         response.protocolVersion = request.protocolVersion;

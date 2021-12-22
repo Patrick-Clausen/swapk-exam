@@ -31,5 +31,5 @@ ExceptionHandler::ExceptionHandler() {
 
     addException(std::type_index(typeid(method_not_allowed_exception)), "405", "Method Not Allowed");
     addException(std::type_index(typeid(parse_failure_exception)), "400", "Bad Request");
-    addException(std::type_index(typeid(method_not_allowed_exception)), "404", "Not Found")
+    addException(std::type_index(typeid(endpoint_not_found_exception)), "404", "Not Found");
 }

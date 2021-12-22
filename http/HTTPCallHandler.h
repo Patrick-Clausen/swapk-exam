@@ -8,14 +8,12 @@
 #include <iostream>
 #include "HTTPCallParser.h"
 #include "../dispatch/Dispatcher.h"
+#include "details/HTTPCallHandlerImpl.h"
 
 namespace http::call {
+
     static std::string handleCall(std::string& request) {
-        HTTPRequest parsedRequest = HTTPCallParser::parseRequest(request);
-
-        HTTPResponse response = Dispatcher::dispatch(parsedRequest);
-
-        return HTTPCallParser::stringifyResponse(response);
+        return http::details::call::HTTPCallHandlerImpl::handle(request);
     }
 }
 
