@@ -13,6 +13,7 @@ HTTPResponse Dispatcher::dispatch(HTTPRequest request) {
     if (ctlItt != _ctl.end()) {
         auto methodPair = ctlItt->second.find(getStringFromEnumValue(request.method));
         if (methodPair != ctlItt->second.end()) {
+            // TODO: More error handling
             HTTPResponse response;
             response.statusCode = "200";
             response.statusMessage = "OK";

@@ -10,6 +10,8 @@
 using namespace std::chrono_literals;
 using namespace boost::asio;
 
+// TODO: can we use tasks?
+
 SocketManager::SocketManager(ip::tcp::endpoint endpoint)
         :
         _listener(new SocketListener(endpoint)),

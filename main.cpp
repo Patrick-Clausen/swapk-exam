@@ -4,6 +4,8 @@
 #include "dispatch/Dispatcher.h"
 using namespace boost::asio;
 
+// TODO: Can we use pimpl?
+
 int main() {
     WeatherController weatherController;
     Dispatcher::getDispatcher().registerController(weatherController);

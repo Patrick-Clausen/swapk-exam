@@ -13,6 +13,7 @@ void ExceptionHandler::addException(const std::type_index& type, std::string_vie
     response.statusCode = statusCode;
     response.protocolVersion = ProtocolVersion::HTTP_1_1;
     response.statusMessage = statusMessage;
+    // TODO: Handle multiple insertions of same type
     _exceptionMapping.insert({type, response});
 }
 

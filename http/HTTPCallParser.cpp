@@ -8,6 +8,8 @@
 #include <sstream>
 #include <algorithm>
 
+// TODO: handle parsing errors
+
 HTTPRequest HTTPCallParser::parseRequest(const std::string &httpRequestString) {
     HTTPRequest httpRequest;
     auto strings = splitStringByNewLine(httpRequestString);
