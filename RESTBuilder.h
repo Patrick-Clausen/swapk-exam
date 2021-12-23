@@ -17,8 +17,9 @@
 
 class RESTBuilder {
 public:
-    static RESTBuilder* builder();
+    static RESTBuilder *builder();
 
+    ~RESTBuilder();
     template <typename T>
     RESTBuilder* addController(T controller){
         _dispatcher.registerController(controller);
