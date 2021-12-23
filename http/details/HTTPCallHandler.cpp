@@ -4,13 +4,13 @@
 
 #include "../HTTPCallParser.h"
 #include "../../dispatch/Dispatcher.h"
-#include "HTTPCallHandlerImpl.h"
+#include "HTTPCallHandler.h"
 
-std::string HTTPCallHandlerImpl::handle(const std::string &request) {
+std::string HTTPCallHandler::handle(const std::string &request) {
     return handleInInstance(request);
 }
 
-std::string HTTPCallHandlerImpl::handleInInstance(const std::string &request) {
+std::string HTTPCallHandler::handleInInstance(const std::string &request) {
     HTTPResponse response;
     try {
         HTTPRequest parsedRequest = HTTPCallParser::parseRequest(request);
@@ -23,8 +23,8 @@ std::string HTTPCallHandlerImpl::handleInInstance(const std::string &request) {
     return HTTPCallParser::stringifyResponse(response);
 }
 
-HTTPCallHandlerImpl::HTTPCallHandlerImpl(ExceptionHandler exceptionHandler,
-                                                              Dispatcher dispatcher)
+HTTPCallHandler::HTTPCallHandler(ExceptionHandler exceptionHandler,
+                                 Dispatcher dispatcher)
         : _exceptionHandler(exceptionHandler), _dispatcher(dispatcher) {
 
 }
