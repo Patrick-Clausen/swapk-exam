@@ -15,14 +15,15 @@ public:
     SocketConnection(boost::asio::ip::tcp::socket* socket, std::function<std::string(std::string)>& callHandler);
     ~SocketConnection();
 
+    void operator()();
+
     boost::signals2::signal<void(SocketConnection*)>& getCompletionSignal();
 
 private:
     std::function<std::string(std::string)>& _callHandler;
     boost::asio::ip::tcp::socket* _socket;
 
-    void threadFunction();
-    std::thread _connectionThread;
+    void connectionFunction();
 
     static std::string read(boost::asio::ip::tcp::socket& socket);
     static void write(boost::asio::ip::tcp::socket& socket, std::string message);
