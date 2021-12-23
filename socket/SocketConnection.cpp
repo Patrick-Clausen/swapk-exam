@@ -7,11 +7,11 @@
 
 using namespace boost::asio;
 
-SocketConnection::SocketConnection(ip::tcp::socket *socket, std::function<std::string(std::string)>& callHandler)
-        : _callHandler(callHandler), _socket(socket), _connectionThread(&SocketConnection::threadFunction, this) {}
+SocketConnection::SocketConnection(ip::tcp::socket *socket, std::function<std::string(std::string)> &callHandler)
+        : _callHandler(callHandler), _socket(socket) {}
 
 
-void SocketConnection::threadFunction() {
+void SocketConnection::connectionFunction() {
     std::string message = read(*_socket);
 
     std::string response = _callHandler(message);
@@ -33,12 +33,15 @@ void SocketConnection::write(ip::tcp::socket &socket, std::string message) {
 }
 
 SocketConnection::~SocketConnection() {
-    _connectionThread.join();
     _socket->close();
     delete _socket;
 }
 
 boost::signals2::signal<void(SocketConnection *)> &SocketConnection::getCompletionSignal() {
     return _completionSignal;
+}
+
+void SocketConnection::operator()() {
+    connectionFunction();
 }
 
