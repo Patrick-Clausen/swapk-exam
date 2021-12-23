@@ -11,10 +11,8 @@
 void ExceptionHandler::addException(const std::type_index& type, std::string_view statusCode, std::string_view statusMessage) {
     HTTPResponse response;
     response.statusCode = statusCode;
-    response.protocolVersion = ProtocolVersion::HTTP_1_1;
     response.statusMessage = statusMessage;
-    // TODO: Handle multiple insertions of same type
-    _exceptionMapping.insert({type, response});
+    _exceptionMapping.insert_or_assign(type, response);
 }
 
 HTTPResponse ExceptionHandler::handleException(const std::exception& exception) {

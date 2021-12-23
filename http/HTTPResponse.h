@@ -9,7 +9,9 @@
 #include "HTTPCall.h"
 
 struct HTTPResponse : public HTTPCall {
-    HTTPResponse() = default;
+    HTTPResponse(){
+        protocolVersion = ProtocolVersion::HTTP_1_1;
+    }
     explicit HTTPResponse(std::string responseBody) {
         statusCode = "200";
         statusMessage = "OK";

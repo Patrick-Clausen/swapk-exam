@@ -20,8 +20,8 @@ RESTBuilder *RESTBuilder::setEndpoint(boost::asio::ip::tcp::endpoint endpoint) {
 }
 
 void RESTBuilder::build() {
-    _httpCallHandlerImpl = new HTTPCallHandlerImpl(_exceptionHandler, _dispatcher);
-    std::function<std::string(std::string)> lambda = [this](std::string arg) -> std::string { return _httpCallHandlerImpl->handle(arg); };
+    _httpCallHandler = new HTTPCallHandler(_exceptionHandler, _dispatcher);
+    std::function<std::string(std::string)> lambda = [this](std::string arg) -> std::string { return _httpCallHandler->handle(arg); };
     _socketManager = new SocketManager(_endpoint,
                                        lambda);
 }
