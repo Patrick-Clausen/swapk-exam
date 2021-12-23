@@ -69,7 +69,7 @@ public:
                       "Controller has no valid methods");
     };
 
-    HTTPResponse dispatch(HTTPRequest request);
+    HTTPResponse dispatch(const HTTPRequest &request);
 
 private:
     std::unordered_map<std::string_view, std::unordered_map<std::string, std::function<std::string(std::string)>>> _ctl;

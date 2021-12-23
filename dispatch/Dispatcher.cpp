@@ -8,7 +8,7 @@
 #include "../exception/defaults/method_not_allowed_exception.h"
 #include "../http/HTTPEnums.h"
 
-HTTPResponse Dispatcher::dispatch(HTTPRequest request) {
+HTTPResponse Dispatcher::dispatch(const HTTPRequest &request) {
     auto ctlItt = _ctl.find(request.path);
     if (ctlItt != _ctl.end()) {
         auto methodPair = ctlItt->second.find(getStringFromEnumValue(request.method));

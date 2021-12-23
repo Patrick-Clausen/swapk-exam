@@ -6,6 +6,8 @@
 #include "../../dispatch/Dispatcher.h"
 #include "HTTPCallHandler.h"
 
+#include <utility>
+
 std::string HTTPCallHandler::handle(const std::string &request) {
     return handleInInstance(request);
 }
@@ -25,6 +27,6 @@ std::string HTTPCallHandler::handleInInstance(const std::string &request) {
 
 HTTPCallHandler::HTTPCallHandler(ExceptionHandler exceptionHandler,
                                  Dispatcher dispatcher)
-        : _exceptionHandler(exceptionHandler), _dispatcher(dispatcher) {
+        : _exceptionHandler(std::move(exceptionHandler)), _dispatcher(std::move(dispatcher)) {
 
 }
