@@ -13,7 +13,7 @@
 
 HTTPRequest HTTPCallParser::parseRequest(const std::string &httpRequestString) {
     HTTPRequest httpRequest;
-    throwParseExecptionIfFalse(httpRequestString.empty(), "Trying to parse request, but string to parse is empty");
+    throwParseExceptionIfFalse(httpRequestString.empty(), "Trying to parse request, but string to parse is empty");
 
     auto strings = splitStringByNewLine(httpRequestString);
 
@@ -49,12 +49,12 @@ std::string HTTPCallParser::stringifyResponse(const HTTPResponse &httpResponse) 
 
 void HTTPCallParser::parseAndAddHeader(const std::string& headerString, HTTPRequest &httpRequest) {
     size_t i = headerString.find(": ");
-    throwParseExecptionIfFalse(i == std::string::npos, "Trying to parse and add header, but no ':' is not found");
+    throwParseExceptionIfFalse(i == std::string::npos, "Trying to parse and add header, but no ':' is not found");
 
     std::string key = headerString.substr(0, i);
     std::string value = headerString.substr(i+2, std::string::npos);
     const auto [it, success] = httpRequest.headers.insert({key, value});
-    throwParseExecptionIfFalse(success, "Trying to insert a new header in request failed");
+    throwParseExceptionIfFalse(success, "Trying to insert a new header in request failed");
 }
 
 std::queue<std::string> HTTPCallParser::splitStringByNewLine(std::string stringToSplit) {
@@ -100,7 +100,7 @@ void HTTPCallParser::parseAndAddStatus(const std::string& statusLine, HTTPReques
 }
 
 std::string HTTPCallParser::stringifyStatusLine(const HTTPResponse &httpResponse) {
-    throwParseExecptionIfFalse(
+    throwParseExceptionIfFalse(
             httpResponse.statusMessage.empty() ||
             httpResponse.statusCode.empty(),
             "Trying to stringify status line but, a value was empty");
@@ -111,7 +111,7 @@ std::string HTTPCallParser::stringifyStatusLine(const HTTPResponse &httpResponse
     return builder.str();
 }
 
-void HTTPCallParser::throwParseExecptionIfFalse(bool condition, const std::string& reason) //Maybe rename, men syntes det er mere clean sådan her.
+void HTTPCallParser::throwParseExceptionIfFalse(bool condition, const std::string& reason) //Maybe rename, men syntes det er mere clean sådan her.
 {
     if (condition)
     {

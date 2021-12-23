@@ -22,7 +22,7 @@ private:
     static std::queue<std::string> splitStringByNewLine(std::string stringToSplit);
 
     static std::string stringifyStatusLine(const HTTPResponse& httpResponse);
-    static void throwParseExecptionIfFalse(bool condition, const std::string& reason);
+    static void throwParseExceptionIfFalse(bool condition, const std::string& reason);
 };
 
 #endif //SWAPK_EXAM_HTTPCALLPARSER_H
