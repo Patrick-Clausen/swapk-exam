@@ -53,8 +53,7 @@ void HTTPCallParser::parseAndAddHeader(const std::string& headerString, HTTPRequ
 
     std::string key = headerString.substr(0, i);
     std::string value = headerString.substr(i+2, std::string::npos);
-    const auto [it, success] = httpRequest.headers.insert({key, value});
-    throwParseExceptionIfFalse(success, "Trying to insert a new header in request failed - duplicate header");
+    httpRequest.headers.insert({key, value});
 }
 
 std::queue<std::string> HTTPCallParser::splitStringByNewLine(std::string stringToSplit) {

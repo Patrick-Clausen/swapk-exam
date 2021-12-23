@@ -5,10 +5,11 @@
 #ifndef SWAPK_EXAM_HTTPCALL_H
 #define SWAPK_EXAM_HTTPCALL_H
 
-#include <map>
+#include <unordered_map>
 #include "HTTPEnums.h"
 
-typedef std::map<std::string,std::string> Headers;
+
+typedef std::unordered_multimap<std::string,std::string> Headers;
 
 class HTTPCall {
 public:

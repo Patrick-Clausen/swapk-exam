@@ -20,7 +20,7 @@ public:
     HTTPResponse handleException(const std::exception& exception);
 
 private:
-    std::map<std::type_index, HTTPResponse> _exceptionMapping;
+    std::unordered_map<std::type_index, HTTPResponse> _exceptionMapping;
     HTTPResponse _fallback;
 };
 
