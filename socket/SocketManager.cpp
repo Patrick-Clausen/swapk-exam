@@ -10,8 +10,6 @@
 using namespace std::chrono_literals;
 using namespace boost::asio;
 
-// TODO: can we use tasks?
-
 SocketManager::SocketManager(ip::tcp::endpoint endpoint, std::function<std::string(std::string)> callHandler)
         :
         _callHandler(callHandler),
@@ -61,18 +59,20 @@ bool SocketManager::transferConnection() {
         }
     }
 
-    if (incomingSocket != nullptr) {
-        auto connection = new SocketConnection(incomingSocket, _callHandler);
-        {
-            const std::lock_guard<std::mutex> connectionLock(_connectionsMutex);
-
-            _connections.push_back(connection);
-        }
-        connection->getCompletionSignal().connect([this](auto &&connection) { connectionCompleted(connection); });
-
-        return true;
+    if (incomingSocket == nullptr) {
+        return false;
     }
-    return false;
+
+    auto connection = new SocketConnection(incomingSocket, _callHandler);
+    {
+        const std::lock_guard<std::mutex> connectionLock(_connectionsMutex);
+
+        _connections.push_back(connection);
+    }
+    connection->getCompletionSignal().connect([this](auto &&connection) { connectionCompleted(connection); });
+    std::thread([connection]() { (*connection)(); }).detach();
+
+    return true;
 }
 
 bool SocketManager::cleanupConnection() {
@@ -87,20 +87,21 @@ bool SocketManager::cleanupConnection() {
         }
     }
 
-    if (connectionToClean != nullptr) {
-        {
-            const std::lock_guard<std::mutex> connectionLock(_connectionsMutex);
-
-            auto found = std::find(_connections.begin(), _connections.end(), connectionToClean);
-            if (found != _connections.end()) {
-                _connections.erase(found);
-            }
-        }
-        delete connectionToClean;
-
-        return true;
+    if (connectionToClean == nullptr) {
+        return false;
     }
-    return false;
+
+    {
+        const std::lock_guard<std::mutex> connectionLock(_connectionsMutex);
+
+        auto found = std::find(_connections.begin(), _connections.end(), connectionToClean);
+        if (found != _connections.end()) {
+            _connections.erase(found);
+        }
+    }
+    delete connectionToClean;
+
+    return true;
 }
 
 void SocketManager::newConnection(ip::tcp::socket *connection) {
