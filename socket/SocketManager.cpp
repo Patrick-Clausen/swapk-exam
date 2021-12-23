@@ -12,8 +12,9 @@ using namespace boost::asio;
 
 // TODO: can we use tasks?
 
-SocketManager::SocketManager(ip::tcp::endpoint endpoint)
+SocketManager::SocketManager(ip::tcp::endpoint endpoint, std::function<std::string(std::string)> callHandler)
         :
+        _callHandler(callHandler),
         _listener(new SocketListener(endpoint)),
         _thread(new std::thread(&SocketManager::threadFunction, this)) {
     _listener->getConnectionSignal().connect([this](auto &&socket) { newConnection(socket); });
@@ -61,7 +62,7 @@ bool SocketManager::transferConnection() {
     }
 
     if (incomingSocket != nullptr) {
-        auto connection = new SocketConnection(incomingSocket);
+        auto connection = new SocketConnection(incomingSocket, _callHandler);
         {
             const std::lock_guard<std::mutex> connectionLock(_connectionsMutex);
 

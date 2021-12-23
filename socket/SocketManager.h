@@ -14,9 +14,10 @@
 
 class SocketManager {
 public:
-    explicit SocketManager(boost::asio::ip::tcp::endpoint endpoint);
+    SocketManager(boost::asio::ip::tcp::endpoint endpoint, std::function<std::string(std::string)> callHandler);
     ~SocketManager();
 private:
+    std::function<std::string(std::string)> _callHandler;
     void newConnection(boost::asio::ip::tcp::socket*);
 
     void connectionCompleted(SocketConnection*);

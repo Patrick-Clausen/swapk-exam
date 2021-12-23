@@ -39,7 +39,7 @@ std::string HTTPCallParser::stringifyResponse(const HTTPResponse &httpResponse) 
         builder << header.first << ": " << header.second << delimiter;
     });
 
-    builder << delimiter << httpResponse.body;
+    builder << delimiter << httpResponse.body << delimiter;
 
     return builder.str();
 }

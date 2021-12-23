@@ -3,19 +3,18 @@
 //
 
 #include "SocketConnection.h"
-#include "../http/HTTPCallHandler.h"
 #include <iostream>
 
 using namespace boost::asio;
 
-SocketConnection::SocketConnection(ip::tcp::socket *socket)
-        : _socket(socket), _connectionThread(&SocketConnection::threadFunction, this) {}
+SocketConnection::SocketConnection(ip::tcp::socket *socket, std::function<std::string(std::string)>& callHandler)
+        : _callHandler(callHandler), _socket(socket), _connectionThread(&SocketConnection::threadFunction, this) {}
 
 
 void SocketConnection::threadFunction() {
     std::string message = read(*_socket);
 
-    std::string response = http::call::handleCall(message);
+    std::string response = _callHandler(message);
 
     write(*_socket, response);
     _completionSignal(this);

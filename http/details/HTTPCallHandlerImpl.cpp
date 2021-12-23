@@ -6,24 +6,25 @@
 #include "../../dispatch/Dispatcher.h"
 #include "HTTPCallHandlerImpl.h"
 
-http::details::call::HTTPCallHandlerImpl &http::details::call::HTTPCallHandlerImpl::handler() {
-    static HTTPCallHandlerImpl handler;
-    return handler;
+std::string HTTPCallHandlerImpl::handle(const std::string &request) {
+    return handleInInstance(request);
 }
 
-std::string http::details::call::HTTPCallHandlerImpl::handle(const std::string& request) {
-    return handler().handleInInstance(request);
-}
-
-std::string http::details::call::HTTPCallHandlerImpl::handleInInstance(const std::string& request) {
+std::string HTTPCallHandlerImpl::handleInInstance(const std::string &request) {
     HTTPResponse response;
     try {
         HTTPRequest parsedRequest = HTTPCallParser::parseRequest(request);
 
-        response = Dispatcher::getDispatcher().dispatch(parsedRequest);
-    } catch (std::exception& exception) {
+        response = _dispatcher.dispatch(parsedRequest);
+    } catch (std::exception &exception) {
         response = _exceptionHandler.handleException(exception);
     }
 
     return HTTPCallParser::stringifyResponse(response);
+}
+
+HTTPCallHandlerImpl::HTTPCallHandlerImpl(ExceptionHandler exceptionHandler,
+                                                              Dispatcher dispatcher)
+        : _exceptionHandler(exceptionHandler), _dispatcher(dispatcher) {
+
 }

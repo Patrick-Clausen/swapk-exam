@@ -6,29 +6,25 @@
 #define SWAPK_EXAM_HTTPCALLHANDLERIMPL_H
 
 #include "../../exception/ExceptionHandler.h"
+#include "../../dispatch/Dispatcher.h"
 #include "../HTTPRequest.h"
 #include "../HTTPResponse.h"
 
-namespace http::details::call {
-    class HTTPCallHandlerImpl {
-    public:
-        static std::string handle(const std::string& request);
+class HTTPCallHandlerImpl {
+public:
+    HTTPCallHandlerImpl(ExceptionHandler exceptionHandler, Dispatcher dispatcher);
 
-        HTTPCallHandlerImpl(HTTPCallHandlerImpl const&) = delete;
-        void operator=(HTTPCallHandlerImpl const &) = delete;
-    private:
-        HTTPCallHandlerImpl() = default;
+    std::string handle(const std::string &request);
 
-        std::string handleInInstance(const std::string& request);
-
-        // Functional singleton
-        static HTTPCallHandlerImpl& handler();
-
-        ExceptionHandler _exceptionHandler;
-    };
-}
+    HTTPCallHandlerImpl() = delete;
+private:
 
 
+    std::string handleInInstance(const std::string &request);
+
+    ExceptionHandler _exceptionHandler;
+    Dispatcher _dispatcher;
+};
 
 
 #endif //SWAPK_EXAM_HTTPCALLHANDLERIMPL_H
