@@ -4,7 +4,7 @@
 #include <iostream>
 #include "WeatherController.h"
 
-std::string WeatherController::GET(const std::string &body) {
+std::string WeatherController::GET(std::string body) {
     std::cout << "Called get" << std::endl;
     return "Hello";
 }
