@@ -1,8 +1,9 @@
 #!/bin/bash
 LG='\e[1;32m'
 Y='\e[1;33m'
-REQUIRED_PKG=("cmake", "gnome-terminal")
-
+REQUIRED_PKG=("cmake" "gnome-terminal" "libboost-all-dev")
+SCRIPTDIR="$(dirname "$0")"
+MAKEFILE="$SCRIPTDIR/Makefile"
 
 if [[ $EUID -ne 0 ]]; then
    echo -e "${LG}This script must be run as root${Y}" 
@@ -15,6 +16,10 @@ echo Checking for $REQUIRED_PKG: $PKG_OK
 if [ "" = "$PKG_OK" ]; then
   echo "No $REQUIRED_PKG. Setting up $REQUIRED_PKG."
   sudo apt-get --yes install $REQUIRED_PKG
+fi
+
+if [ ! -f "$MAKEFILE" ]; then
+  cmake CMakeLists.txt -DCMAKE_BUILD_TYPE=Release
 fi
 
 echo -e "${LG}Running Make${Y}"
