@@ -36,8 +36,16 @@ make
 echo -e "${LG}Giving execute permissions${Y}"
 chmod +x swapk_exam
 
-echo -e "${LG}Opening terminal and starting web api${Y}"
-sudo gnome-terminal -- sudo ./swapk_exam
+SERVICE="swapk_exam"
+if pgrep -x "$SERVICE" >/dev/null
+then
+    echo "$SERVICE is running"
+else
+  echo -e "${LG}Opening terminal and starting web api${Y}"
+  sudo gnome-terminal -- sudo ./swapk_exam 
+fi
+
+
 
 echo -e "${LG}Testing GET with command: curl localhost/weather${Y}:"
 curl localhost/weather
