@@ -6,7 +6,7 @@ SCRIPTDIR="$(dirname "$0")"
 MAKEFILE="$SCRIPTDIR/Makefile"
 
 if [[ $EUID -ne 0 ]]; then
-   echo -e "${LG}This script must be run with sudo${Y}" 
+   echo -e "${LG}This script must be run with sudo privileges${Y}"
    exec sudo -- "$0" "$@"
 fi
 
