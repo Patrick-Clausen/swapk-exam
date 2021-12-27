@@ -21,6 +21,7 @@ for pkg in ${packages[@]}; do
     else
       echo ${pkg} is not installed.
       sudo apt-get --yes install ${pkg}
+      echo " ${pkg}" >> file.txt
     fi
 done
 
