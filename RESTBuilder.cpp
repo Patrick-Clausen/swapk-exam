@@ -6,6 +6,8 @@
 
 #include <utility>
 
+using namespace restbuilder;
+
 RESTBuilder *RESTBuilder::builder() {
     return new RESTBuilder();
 }
@@ -22,9 +24,9 @@ RESTBuilder *RESTBuilder::setEndpoint(boost::asio::ip::tcp::endpoint endpoint) {
 }
 
 void RESTBuilder::build() {
-    _httpCallHandler = new HTTPCallHandler(_exceptionHandler, _interceptor);
+    _httpCallHandler = new http::HTTPCallHandler(_exceptionHandler, _interceptor);
     std::function<std::string(std::string)> lambda = [this](
-            const std::string &arg) -> std::string { return _httpCallHandler->handle(arg); };
+            std::string &&arg) -> std::string { return _httpCallHandler->handle(std::move(arg)); };
     _socketManager = new restbuilder::socket::SocketManager(_endpoint,
                                        lambda);
 }

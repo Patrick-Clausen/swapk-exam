@@ -4,8 +4,10 @@
 
 #include "method_not_allowed_exception.h"
 
+using namespace restbuilder::exception::defaults;
+
 method_not_allowed_exception::method_not_allowed_exception(const std::string &endpoint,
-                                                           const RequestMethod attemptedMethod)
+                                                           const http::enums::RequestMethod attemptedMethod)
         : std::runtime_error("Tried to access endpoint " + endpoint + " with non-supported method " + getStringFromEnumValue(attemptedMethod)) {}
 
 method_not_allowed_exception::method_not_allowed_exception()

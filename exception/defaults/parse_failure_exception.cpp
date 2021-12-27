@@ -4,14 +4,14 @@
 
 #include "parse_failure_exception.h"
 
-parse_failure_exception::parse_failure_exception()
-: std::runtime_error("Could not parse HTTP request")
+using namespace restbuilder::exception::defaults;
 
-{
+parse_failure_exception::parse_failure_exception()
+        : std::runtime_error("Could not parse HTTP request") {
 
 }
 
-parse_failure_exception::parse_failure_exception(const std::string& reason)
-: std::runtime_error("Could not parse HTTP request. Reason: " + reason){
+parse_failure_exception::parse_failure_exception(std::string &&reason)
+        : std::runtime_error("Could not parse HTTP request. Reason: " + reason) {
 
 }

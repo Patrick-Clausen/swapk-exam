@@ -6,6 +6,9 @@
 
 #include <type_traits>
 
-template<typename T, typename U>
-using hasPost = decltype(static_cast<U>(&T::POST));
+namespace restbuilder::meta {
+    template<typename T, typename U>
+    using hasPost = decltype(static_cast<U>(&T::POST));
+}
+
 #endif //SWAPK_EXAM_HASPOST_H

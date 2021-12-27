@@ -7,7 +7,10 @@
 
 #include <type_traits>
 
-template<typename T, typename U>
-using hasGet = decltype(static_cast<U>(&T::GET));
+namespace restbuilder::meta {
+    template<typename T, typename U>
+    using hasGet = decltype(static_cast<U>(&T::GET));
+}
+
 #endif //SWAPK_EXAM_HASGET_H
 

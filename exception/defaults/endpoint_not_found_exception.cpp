@@ -4,6 +4,8 @@
 
 #include "endpoint_not_found_exception.h"
 
+using namespace restbuilder::exception::defaults;
+
 endpoint_not_found_exception::endpoint_not_found_exception()
         : std::runtime_error("Tried to access endpoint that could not be found") {
 

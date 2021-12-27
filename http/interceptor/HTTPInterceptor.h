@@ -9,65 +9,65 @@
 #include <variant>
 #include <vector>
 
-#include "../../dispatch/detect.h"
+#include "../../meta/detect.h"
 #include "../../dispatch/Dispatcher.h"
-#include "hasIntercept.h"
+#include "../../meta/hasIntercept.h"
 
 #include "../HTTPRequest.h"
 #include "../HTTPResponse.h"
 
+namespace restbuilder::http::interceptor {
+    class HTTPInterceptorChain {
+    public:
+        typedef std::function<HTTPResponse(HTTPRequest & , HTTPInterceptorChain & )> HTTPInterceptor;
 
-class HTTPInterceptorChain {
-public:
-    typedef std::function<HTTPResponse (HTTPRequest &, HTTPInterceptorChain &)> HTTPInterceptor;
-
-    template<typename T, typename... Args>
-    explicit HTTPInterceptorChain(Dispatcher &dispatcher, T arg, Args... args) {
-        addInterceptor(arg);
-        HTTPInterceptorChain(dispatcher, args...);
-    }
-
-    template<typename T>
-    explicit HTTPInterceptorChain(Dispatcher &dispatcher, T arg)
-            : _dispatcher(dispatcher) {
-        addInterceptor(arg);
-    }
-
-    explicit HTTPInterceptorChain(Dispatcher &dispatcher): _dispatcher(dispatcher) { }
-
-    HTTPResponse callChain(HTTPRequest &request) {
-        HTTPInterceptorChain chain(*this);
-
-        return chain.next(request);
-    }
-
-    HTTPResponse next(HTTPRequest &request) {
-        if (_iterator == _interceptors.end()) {
-            return _dispatcher.dispatch(request);
+        template<typename T, typename... Args>
+        explicit HTTPInterceptorChain(dispatch::Dispatcher &dispatcher, T arg, Args... args) {
+            addInterceptor(arg);
+            HTTPInterceptorChain(dispatcher, args...);
         }
-        return (*(_iterator++))(request, *this);
-    }
 
-    template<typename T>
-    void addInterceptor(T interceptor) {
-        static_assert(detect<hasIntercept, T, HTTPResponse (T::*)(HTTPRequest &, HTTPInterceptorChain &)>::value,
-                      "Interceptor did not have valid intercept method");
-        HTTPInterceptor inter = [&interceptor](HTTPRequest& req, HTTPInterceptorChain& chain)->HTTPResponse{
-            return interceptor.intercept(req, chain);
+        template<typename T>
+        explicit HTTPInterceptorChain(dispatch::Dispatcher &dispatcher, T arg)
+                : _dispatcher(dispatcher) {
+            addInterceptor(arg);
+        }
+
+        explicit HTTPInterceptorChain(dispatch::Dispatcher &dispatcher) : _dispatcher(dispatcher) {}
+
+        HTTPResponse callChain(HTTPRequest &request) {
+            HTTPInterceptorChain chain(*this);
+
+            return chain.next(request);
+        }
+
+        HTTPResponse next(HTTPRequest &request) {
+            if (_iterator == _interceptors.end()) {
+                return _dispatcher.dispatch(request);
+            }
+            return (*(_iterator++))(request, *this);
+        }
+
+        template<typename T>
+        void addInterceptor(T interceptor) {
+            static_assert(meta::detect<meta::hasIntercept, T, HTTPResponse(T::*)(HTTPRequest &, HTTPInterceptorChain &)>::value,
+                          "Interceptor did not have valid intercept method");
+            HTTPInterceptor inter = [&interceptor](HTTPRequest &req, HTTPInterceptorChain &chain) -> HTTPResponse {
+                return interceptor.intercept(req, chain);
+            };
+            _interceptors.push_back(inter);
+        }
+
+    private:
+        HTTPInterceptorChain(HTTPInterceptorChain &other) : _interceptors(other._interceptors),
+                                                            _dispatcher(other._dispatcher) {
+            _iterator = _interceptors.begin();
         };
-        _interceptors.push_back(inter);
-    }
+        std::vector<HTTPInterceptor> _interceptors;
+        std::vector<HTTPInterceptor>::iterator _iterator;
 
-
-private:
-    HTTPInterceptorChain(HTTPInterceptorChain &other) : _interceptors(other._interceptors), _dispatcher(other._dispatcher) {
-        _iterator = _interceptors.begin();
+        dispatch::Dispatcher &_dispatcher;
     };
-    std::vector<HTTPInterceptor> _interceptors;
-    std::vector<HTTPInterceptor>::iterator _iterator;
-
-    Dispatcher &_dispatcher;
-};
-
+}
 
 #endif //SWAPK_EXAM_HTTPINTERCEPTOR_H

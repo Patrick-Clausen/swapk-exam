@@ -9,27 +9,25 @@
 #include <sstream>
 #include <algorithm>
 
-// TODO: handle parsing errors
+using namespace restbuilder::http;
 
 HTTPRequest HTTPCallParser::parseRequest(const std::string &httpRequestString) {
     HTTPRequest httpRequest;
-    throwParseExceptionIfFalse(httpRequestString.empty(), "Trying to parse request, but string to parse is empty");
+    throwParseExceptionIfTrue(httpRequestString.empty(), "Trying to parse request, but string to parse is empty");
 
     auto strings = splitStringByNewLine(httpRequestString);
 
-    std::string statusLine = strings.front();
+    parseAndAddStatus(std::move(strings.front()), httpRequest);
     strings.pop();
-    parseAndAddStatus(statusLine, httpRequest);
-
-    while(!strings.front().empty()){
-        parseAndAddHeader(strings.front(), httpRequest);
+    while (!strings.front().empty()) {
+        parseAndAddHeader(std::move(strings.front()), httpRequest);
         strings.pop();
     }
     strings.pop();
 
     httpRequest.body = strings.front();
 
-    return httpRequest;
+    return std::move(httpRequest);
 }
 
 std::string HTTPCallParser::stringifyResponse(const HTTPResponse &httpResponse) {
@@ -38,22 +36,23 @@ std::string HTTPCallParser::stringifyResponse(const HTTPResponse &httpResponse) 
 
     builder << stringifyStatusLine(httpResponse) << delimiter;
 
-    std::for_each(httpResponse.headers.begin(), httpResponse.headers.end(), [&builder, &delimiter](std::pair<std::string, std::string>&& header) {
-        builder << header.first << ": " << header.second << delimiter;
-    });
+    std::for_each(httpResponse.headers.begin(), httpResponse.headers.end(),
+                  [&builder, &delimiter](std::pair<std::string, std::string> &&header) {
+                      builder << header.first << ": " << header.second << delimiter;
+                  });
 
     builder << delimiter << httpResponse.body << delimiter;
 
     return builder.str();
 }
 
-void HTTPCallParser::parseAndAddHeader(const std::string& headerString, HTTPRequest &httpRequest) {
+void HTTPCallParser::parseAndAddHeader(std::string &&headerString, HTTPRequest &httpRequest) {
     size_t i = headerString.find(": ");
-    throwParseExceptionIfFalse(i == std::string::npos, "Trying to parse and add header, but no ':' is not found");
+    throwParseExceptionIfTrue(i == std::string::npos, "Trying to parse and add header, but no ':' was found");
 
     std::string key = headerString.substr(0, i);
-    std::string value = headerString.substr(i+2, std::string::npos);
-    httpRequest.headers.insert({key, value});
+    std::string value = headerString.substr(i + 2, std::string::npos);
+    httpRequest.headers.insert({std::move(key), std::move(value)});
 }
 
 std::queue<std::string> HTTPCallParser::splitStringByNewLine(std::string stringToSplit) {
@@ -79,7 +78,7 @@ std::queue<std::string> HTTPCallParser::splitStringByNewLine(std::string stringT
     return lines;
 }
 
-void HTTPCallParser::parseAndAddStatus(const std::string& statusLine, HTTPRequest &httpRequest) {
+void HTTPCallParser::parseAndAddStatus(std::string &&statusLine, HTTPRequest &httpRequest) {
     char delimiter = ' ';
     std::string substr;
     std::string tmp;
@@ -88,32 +87,31 @@ void HTTPCallParser::parseAndAddStatus(const std::string& statusLine, HTTPReques
 
     // METHOD
     std::getline(stream, tmp, delimiter);
-    httpRequest.method = getEnumValueFromString<RequestMethod>(tmp);
+    httpRequest.method = enums::getEnumValueFromString<enums::RequestMethod>(tmp);
 
     // PATH
     std::getline(stream, httpRequest.path, delimiter);
 
     // PROTOCOL VERSION
     std::getline(stream, tmp, delimiter);
-    httpRequest.protocolVersion = getEnumValueFromString<ProtocolVersion>(tmp);
+    httpRequest.protocolVersion = enums::getEnumValueFromString<enums::ProtocolVersion>(tmp);
 }
 
 std::string HTTPCallParser::stringifyStatusLine(const HTTPResponse &httpResponse) {
-    throwParseExceptionIfFalse(
+    throwParseExceptionIfTrue(
             httpResponse.statusMessage.empty() ||
             httpResponse.statusCode.empty(),
             "Trying to stringify status line but, a value was empty");
 
     char delimiter = ' ';
     std::stringstream builder;
-    builder << getStringFromEnumValue(httpResponse.protocolVersion) << delimiter << httpResponse.statusCode << delimiter << httpResponse.statusMessage;
+    builder << getStringFromEnumValue(httpResponse.protocolVersion) << delimiter << httpResponse.statusCode << delimiter
+            << httpResponse.statusMessage;
     return builder.str();
 }
 
-void HTTPCallParser::throwParseExceptionIfFalse(bool condition, const std::string& reason) //Maybe rename, men syntes det er mere clean sådan her.
-{
-    if (condition)
-    {
-        throw parse_failure_exception(reason);
+void HTTPCallParser::throwParseExceptionIfTrue(bool condition, std::string &&reason) {
+    if (condition) {
+        throw exception::defaults::parse_failure_exception(std::move(reason));
     }
 }

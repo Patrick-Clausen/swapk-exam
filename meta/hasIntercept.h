@@ -7,7 +7,9 @@
 
 #include <type_traits>
 
-template<typename T, typename U>
-using hasIntercept = decltype(static_cast<U>(&T::intercept));
+namespace restbuilder::meta {
+    template<typename T, typename U>
+    using hasIntercept = decltype(static_cast<U>(&T::intercept));
+}
 
 #endif //SWAPK_EXAM_HASINTERCEPT_H

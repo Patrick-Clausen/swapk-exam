@@ -11,17 +11,19 @@
 #include <typeindex>
 #include "../http/HTTPResponse.h"
 
+namespace restbuilder::exception {
+    class ExceptionHandler {
+    public:
+        ExceptionHandler();
 
-class ExceptionHandler {
-public:
-    ExceptionHandler();
+        void addException(const std::type_index &type, std::string_view statusCode, std::string_view statusMessage);
 
-    void addException(const std::type_index& type, std::string_view statusCode, std::string_view statusMessage);
-    HTTPResponse handleException(const std::exception& exception);
+        http::HTTPResponse handleException(std::exception &&exception);
 
-private:
-    std::unordered_map<std::type_index, HTTPResponse> _exceptionMapping;
-    HTTPResponse _fallback;
-};
+    private:
+        std::unordered_map<std::type_index, http::HTTPResponse> _exceptionMapping;
+        http::HTTPResponse _fallback;
+    };
+}
 
 #endif //SWAPK_EXAM_EXCEPTIONHANDLER_H
