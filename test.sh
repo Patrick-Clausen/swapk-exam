@@ -6,7 +6,7 @@ SCRIPTDIR="$(dirname "$0")"
 MAKEFILE="$SCRIPTDIR/Makefile"
 
 if [[ $EUID -ne 0 ]]; then
-   echo -e "${LG}This script must be run as root${Y}" 
+   echo -e "${LG}This script must be run with sudo${Y}" 
    exec sudo -- "$0" "$@"
 fi
 
@@ -20,11 +20,10 @@ for pkg in ${packages[@]}; do
       echo ${pkg} is not installed.
       sudo apt-get --yes install ${pkg}
       echo "sudo apt-get remove -y $pkg" >> cleanup.sh
-        if [ "$pkg" == "libboost-all-dev"]; 
-        then
-          echo "sudo apt-get autoremove -y" >> cleanup.sh
-          
-        fi
+      if [ "${pkg}" == "libboost-all-dev" ]; 
+      then
+        echo "sudo apt-get autoremove -y" >> cleanup.sh
+      fi
     fi
 done
 
