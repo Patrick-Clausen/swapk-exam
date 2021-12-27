@@ -10,19 +10,26 @@
 #include <queue>
 #include <string>
 
-class HTTPCallParser {
-public:
-    static HTTPRequest parseRequest(const std::string &httpRequestString);
-    static std::string stringifyResponse(const HTTPResponse &httpResponse);
+namespace restbuilder::http {
+    class HTTPCallParser {
+    public:
+        static HTTPRequest parseRequest(const std::string &httpRequestString);
 
-private:
-    static void parseAndAddStatus(const std::string& statusLine, HTTPRequest &httpRequest);
-    static void parseAndAddHeader(const std::string& headerString, HTTPRequest &httpRequest);
+        static std::string stringifyResponse(const HTTPResponse &httpResponse);
 
-    static std::queue<std::string> splitStringByNewLine(std::string stringToSplit);
+    private:
+        static void parseAndAddStatus(std::string &&statusLine, HTTPRequest &httpRequest);
 
-    static std::string stringifyStatusLine(const HTTPResponse& httpResponse);
-    static void throwParseExceptionIfFalse(bool condition, const std::string& reason);
-};
+        static void parseAndAddHeader(std::string &&headerString, HTTPRequest &httpRequest);
+
+        static std::queue<std::string> splitStringByNewLine(std::string stringToSplit);
+
+        static std::string stringifyStatusLine(const HTTPResponse &httpResponse);
+
+        static void throwParseExceptionIfTrue(bool condition, std::string &&reason);
+    };
+
+}
+
 
 #endif //SWAPK_EXAM_HTTPCALLPARSER_H

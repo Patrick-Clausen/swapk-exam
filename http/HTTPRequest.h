@@ -9,9 +9,13 @@
 #include "HTTPCall.h"
 #include "HTTPEnums.h"
 
-struct HTTPRequest : public HTTPCall {
-    std::string path;
-    RequestMethod method;
-};
+namespace restbuilder::http {
+    struct HTTPRequest : public HTTPCall {
+        std::string path;
+        enums::RequestMethod method;
+    };
+}
+
+
 
 #endif //SWAPK_EXAM_HTTPREQUEST_H

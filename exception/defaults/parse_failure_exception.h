@@ -7,11 +7,12 @@
 
 #include <stdexcept>
 
-class parse_failure_exception : public std::runtime_error {
-public:
-    parse_failure_exception();
-    explicit parse_failure_exception(const std::string& reason);
-};
-
+namespace restbuilder::exception::defaults {
+    class parse_failure_exception : public std::runtime_error {
+    public:
+        parse_failure_exception();
+        explicit parse_failure_exception(std::string&& reason);
+    };
+}
 
 #endif //SWAPK_EXAM_PARSE_FAILURE_EXCEPTION_H

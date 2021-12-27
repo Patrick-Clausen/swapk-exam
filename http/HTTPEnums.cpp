@@ -7,6 +7,7 @@
 #include <boost/assign/list_of.hpp>
 
 using namespace boost::assign;
+using namespace restbuilder::http::enums;
 
 const std::unordered_map<ProtocolVersion, std::string> protocolVersionEnumAsString = map_list_of
         (HTTP_1_0, "HTTP/1.0")
@@ -14,11 +15,11 @@ const std::unordered_map<ProtocolVersion, std::string> protocolVersionEnumAsStri
         (HTTP_2, "HTTP/2");
 
 template<>
-std::string getStringFromEnumValue<ProtocolVersion>(ProtocolVersion protocolVersion) {
+std::string restbuilder::http::enums::getStringFromEnumValue<ProtocolVersion>(ProtocolVersion protocolVersion) {
     return protocolVersionEnumAsString.at(protocolVersion);
 }
 template<>
-ProtocolVersion getEnumValueFromString<ProtocolVersion>(std::string& str) {
+ProtocolVersion restbuilder::http::enums::getEnumValueFromString<ProtocolVersion>(std::string& str) {
     for (const auto& protocol : protocolVersionEnumAsString) {
         if (protocol.second == str) {
             return protocol.first;
@@ -39,12 +40,12 @@ const std::unordered_map<RequestMethod, std::string> requestMethodEnumAsString =
         (PATCH, "PATCH");
 
 template<>
-std::string getStringFromEnumValue<RequestMethod>(RequestMethod requestMethod) {
+std::string restbuilder::http::enums::getStringFromEnumValue<RequestMethod>(RequestMethod requestMethod) {
     return requestMethodEnumAsString.at(requestMethod);
 }
 
 template<>
-RequestMethod getEnumValueFromString<RequestMethod>(std::string& str) {
+RequestMethod restbuilder::http::enums::getEnumValueFromString<RequestMethod>(std::string& str) {
     for (const auto& requestMethod : requestMethodEnumAsString) {
         if (requestMethod.second == str) {
             return requestMethod.first;

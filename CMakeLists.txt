@@ -11,12 +11,12 @@ file(GLOB sources
         exception/*.cpp
         exception/defaults/*.cpp
         http/*.cpp
-        http/details/*.cpp
         socket/*.cpp
+        http/interceptor/*.cpp
         RESTBuilder.cpp)
 
 
-add_executable(swapk_exam main.cpp ${sources} http/interceptor/HTTPInterceptor.h http/interceptor/hasIntercept.h)
+add_executable(swapk_exam main.cpp ${sources})
 set_target_properties(swapk_exam PROPERTIES LINKER_LANGUAGE CXX)
 target_link_libraries(swapk_exam PRIVATE Threads::Threads)
 target_link_libraries(swapk_exam PRIVATE boost_system)

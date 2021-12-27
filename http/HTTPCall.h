@@ -8,14 +8,15 @@
 #include <unordered_map>
 #include "HTTPEnums.h"
 
+namespace restbuilder::http {
+    typedef std::unordered_multimap<std::string, std::string> Headers;
 
-typedef std::unordered_multimap<std::string,std::string> Headers;
-
-class HTTPCall {
-public:
-    ProtocolVersion protocolVersion;
-    Headers headers;
-    std::string body;
-};
+    class HTTPCall {
+    public:
+        enums::ProtocolVersion protocolVersion;
+        Headers headers;
+        std::string body;
+    };
+}
 
 #endif //SWAPK_EXAM_HTTPCALL_H

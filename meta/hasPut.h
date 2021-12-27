@@ -7,6 +7,9 @@
 
 #include <type_traits>
 
-template<typename T, typename U>
-using hasPut = decltype(static_cast<U>(&T::PUT));
+namespace restbuilder::meta {
+    template<typename T, typename U>
+    using hasPut = decltype(static_cast<U>(&T::PUT));
+}
+
 #endif //SWAPK_EXAM_HASPUT_H

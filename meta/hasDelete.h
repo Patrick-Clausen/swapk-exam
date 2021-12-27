@@ -7,6 +7,9 @@
 
 #include <type_traits>
 
-template<typename T, typename U>
-using hasDelete = decltype(static_cast<U>(&T::DELETE));
+namespace restbuilder::meta {
+    template<typename T, typename U>
+    using hasDelete = decltype(static_cast<U>(&T::DELETE));
+}
+
 #endif //SWAPK_EXAM_HASDELETE_H

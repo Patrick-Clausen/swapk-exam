@@ -6,7 +6,7 @@
 // No inheritance!
 class interceptor {
 public:
-    HTTPResponse intercept(HTTPRequest& request, HTTPInterceptorChain& chain) {
+    restbuilder::http::HTTPResponse intercept(restbuilder::http::HTTPRequest& request, restbuilder::http::interceptor::HTTPInterceptorChain& chain) {
         std::cout << "Hello from chain!" << std::endl;
         return chain.next(request);
     }
@@ -17,7 +17,7 @@ int main() {
 
     interceptor inter;
     interceptor inter2;
-    RESTBuilder::builder()->addController(weatherController)->addInterceptor(inter)->addInterceptor(inter2)->build();
+    restbuilder::RESTBuilder::builder()->addController(weatherController)->addInterceptor(inter)->addInterceptor(inter2)->build();
     for(;;) {
 
     }
