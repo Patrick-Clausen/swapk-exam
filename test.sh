@@ -19,7 +19,12 @@ for pkg in ${packages[@]}; do
     then
       echo ${pkg} is not installed.
       sudo apt-get --yes install ${pkg}
-      echo "sudo apt-get remove $pkg" >> cleanup.sh
+      echo "sudo apt-get remove -y $pkg" >> cleanup.sh
+        if [ "$pkg" == "libboost-all-dev"]; 
+        then
+          echo "sudo apt-get autoremove -y" >> cleanup.sh
+          
+        fi
     fi
 done
 
