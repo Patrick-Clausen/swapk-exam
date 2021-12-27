@@ -15,10 +15,8 @@ for pkg in ${packages[@]}; do
 
     is_pkg_installed=$(dpkg-query -W --showformat='${Status}\n' ${pkg} | grep "install ok installed")
 
-    if [ "${is_pkg_installed}" == "install ok installed" ]; 
+    if [ ! "${is_pkg_installed}" == "install ok installed" ]; 
     then
-      echo ${pkg} is installed.
-    else
       echo ${pkg} is not installed.
       sudo apt-get --yes install ${pkg}
       echo "sudo apt-get remove $pkg" >> cleanup.sh
