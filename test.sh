@@ -21,17 +21,9 @@ for pkg in ${packages[@]}; do
     else
       echo ${pkg} is not installed.
       sudo apt-get --yes install ${pkg}
-      echo " ${pkg}" >> file.txt
+      echo "sudo apt-get remove $pkg" >> cleanup.sh
     fi
 done
-
-
-PKG_OK=$(dpkg-query -W --showformat='${Status}\n' $REQUIRED_PKG|grep "install ok installed")
-echo Checking for $REQUIRED_PKG: $PKG_OK
-if [ "" = "$PKG_OK" ]; then
-  echo "No $REQUIRED_PKG. Setting up $REQUIRED_PKG."
-  sudo apt-get --yes install $REQUIRED_PKG
-fi
 
 if [ ! -f "$MAKEFILE" ]; then
   cmake CMakeLists.txt -DCMAKE_BUILD_TYPE=Release
