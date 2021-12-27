@@ -7,13 +7,11 @@
 using namespace boost::asio;
 
 SocketListener::SocketListener(const ip::tcp::endpoint &endpoint)
-        : _acceptor(_ioContext, endpoint) {
-    _listener = new std::thread(&SocketListener::listenImpl, this);
-}
+        : _acceptor(_ioContext, endpoint), _listener(&SocketListener::listenImpl, this) {}
 
 void SocketListener::listenImpl() {
     while (_keepGoing) {
-        auto* socket = new ip::tcp::socket(_ioContext);
+        std::shared_ptr<ip::tcp::socket> socket(new ip::tcp::socket(_ioContext));
         _acceptor.accept(*socket);
 
         _connectionSignal(socket);
@@ -23,10 +21,9 @@ void SocketListener::listenImpl() {
 SocketListener::~SocketListener() {
     _keepGoing = false;
     _acceptor.close();
-    _listener->join();
-    delete _listener;
+    _listener.join();
 }
 
-boost::signals2::signal<void(ip::tcp::socket *)>& SocketListener::getConnectionSignal() {
+boost::signals2::signal<void(std::shared_ptr<ip::tcp::socket>)> &SocketListener::getConnectionSignal() {
     return _connectionSignal;
 }
