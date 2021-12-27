@@ -6,6 +6,7 @@
 #include <iostream>
 
 using namespace boost::asio;
+using namespace restbuilder::socket;
 
 SocketConnection::SocketConnection(std::shared_ptr<ip::tcp::socket> socket, std::function<std::string(std::string)> &callHandler)
         : _callHandler(callHandler), _socket(socket) {}

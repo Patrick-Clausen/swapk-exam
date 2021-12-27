@@ -10,6 +10,7 @@
 
 using namespace std::chrono_literals;
 using namespace boost::asio;
+using namespace restbuilder::socket;
 
 SocketManager::SocketManager(ip::tcp::endpoint endpoint, std::function<std::string(std::string)>& callHandler)
         :

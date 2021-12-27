@@ -5,6 +5,7 @@
 #include "SocketListener.h"
 
 using namespace boost::asio;
+using namespace restbuilder::socket;
 
 SocketListener::SocketListener(const ip::tcp::endpoint &endpoint)
         : _acceptor(_ioContext, endpoint), _listener(&SocketListener::listenImpl, this) {}
