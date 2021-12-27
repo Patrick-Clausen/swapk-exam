@@ -21,13 +21,6 @@
 namespace restbuilder::dispatch {
     class Dispatcher {
     public:
-
-        static Dispatcher &getDispatcher() {
-            static Dispatcher dispatcher;
-
-            return dispatcher;
-        }
-
         template<typename T>
         void registerController(T ctl) {
             validateControllers<T>();
@@ -74,7 +67,7 @@ namespace restbuilder::dispatch {
                           "Controller has no valid methods");
         };
 
-        http::HTTPResponse dispatch(const http::HTTPRequest &request);
+        http::HTTPResponse dispatch(http::HTTPRequest&& request);
 
     private:
         std::unordered_map<std::string_view, std::unordered_map<std::string, std::function<std::string(

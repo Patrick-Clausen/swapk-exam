@@ -14,7 +14,7 @@ namespace restbuilder::http {
 
     class HTTPCallHandler {
     public:
-        HTTPCallHandler(exception::ExceptionHandler &exceptionHandler, interceptor::HTTPInterceptorChain &interceptorChain);
+        HTTPCallHandler(exception::ExceptionHandler& exceptionHandler, interceptor::HTTPInterceptorChain& interceptorChain);
 
         std::string handle(std::string &&request);
 
@@ -22,8 +22,8 @@ namespace restbuilder::http {
 
     private:
 
-        exception::ExceptionHandler &_exceptionHandler;
-        interceptor::HTTPInterceptorChain &_interceptorChain;
+        exception::ExceptionHandler& _exceptionHandler;
+        interceptor::HTTPInterceptorChain& _interceptorChain;
     };
 }
 

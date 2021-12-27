@@ -7,7 +7,7 @@
 using namespace boost::asio;
 using namespace restbuilder::socket;
 
-SocketListener::SocketListener(const ip::tcp::endpoint &endpoint)
+SocketListener::SocketListener(const ip::tcp::endpoint& endpoint)
         : _acceptor(_ioContext, endpoint), _listener(&SocketListener::listenImpl, this) {}
 
 void SocketListener::listenImpl() {
@@ -25,6 +25,6 @@ SocketListener::~SocketListener() {
     _listener.join();
 }
 
-boost::signals2::signal<void(std::shared_ptr<ip::tcp::socket>)> &SocketListener::getConnectionSignal() {
+boost::signals2::signal<void(std::shared_ptr<ip::tcp::socket>)>& SocketListener::getConnectionSignal() {
     return _connectionSignal;
 }

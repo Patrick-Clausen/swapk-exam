@@ -10,7 +10,7 @@
 
 using namespace restbuilder::dispatch;
 
-restbuilder::http::HTTPResponse Dispatcher::dispatch(const http::HTTPRequest &request) {
+restbuilder::http::HTTPResponse Dispatcher::dispatch(http::HTTPRequest&& request) {
     auto ctlItt = _ctl.find(request.path);
     if (ctlItt != _ctl.end()) {
         auto methodPair = ctlItt->second.find(getStringFromEnumValue(request.method));

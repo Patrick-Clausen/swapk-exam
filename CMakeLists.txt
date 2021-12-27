@@ -13,7 +13,7 @@ file(GLOB sources
         http/*.cpp
         socket/*.cpp
         http/interceptor/*.cpp
-        RESTBuilder.cpp)
+        restbuilder/*.cpp)
 
 
 add_executable(swapk_exam main.cpp ${sources})
