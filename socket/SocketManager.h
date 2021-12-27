@@ -12,39 +12,42 @@
 #include "SocketListener.h"
 #include "SocketConnection.h"
 
-class SocketManager {
-public:
-    SocketManager(boost::asio::ip::tcp::endpoint endpoint, std::function<std::string(std::string)> &callHandler);
+namespace restbuilder::socket {
+    
+    class SocketManager {
+    public:
+        SocketManager(boost::asio::ip::tcp::endpoint endpoint, std::function<std::string(std::string)> &callHandler);
 
-    ~SocketManager();
+        ~SocketManager();
 
-private:
-    std::function<std::string(std::string)> _callHandler;
+    private:
+        std::function<std::string(std::string)> _callHandler;
 
-    void newConnection(std::shared_ptr<boost::asio::ip::tcp::socket>);
+        void newConnection(std::shared_ptr<boost::asio::ip::tcp::socket>);
 
-    void connectionCompleted(std::shared_ptr<SocketConnection>);
+        void connectionCompleted(std::shared_ptr<SocketConnection>);
 
-    bool transferConnection();
+        bool transferConnection();
 
-    bool cleanupConnection();
+        bool cleanupConnection();
 
-    SocketListener _listener;
+        SocketListener _listener;
 
-    std::vector<std::shared_ptr<SocketConnection> > _connections;
-    std::mutex _connectionsMutex;
+        std::vector<std::shared_ptr<SocketConnection> > _connections;
+        std::mutex _connectionsMutex;
 
-    void threadFunction();
+        void threadFunction();
 
-    std::thread _thread;
-    bool _keepGoing = true;
+        std::thread _thread;
+        bool _keepGoing = true;
 
-    std::queue<std::shared_ptr<boost::asio::ip::tcp::socket> > _incomingConnections;
-    std::mutex _incomingConnectionsMutex;
+        std::queue<std::shared_ptr<boost::asio::ip::tcp::socket> > _incomingConnections;
+        std::mutex _incomingConnectionsMutex;
 
-    std::queue<std::shared_ptr<SocketConnection> > _completedConnections;
-    std::mutex _completedConnectionsMutex;
-};
+        std::queue<std::shared_ptr<SocketConnection> > _completedConnections;
+        std::mutex _completedConnectionsMutex;
+    };
 
+}
 
 #endif //SWAPK_EXAM_SOCKETMANAGER_H

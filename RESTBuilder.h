@@ -49,7 +49,7 @@ private:
     Dispatcher _dispatcher;
     HTTPInterceptorChain _interceptor;
     HTTPCallHandler *_httpCallHandler{};
-    SocketManager *_socketManager{};
+    restbuilder::socket::SocketManager *_socketManager{};
 };
 
 
