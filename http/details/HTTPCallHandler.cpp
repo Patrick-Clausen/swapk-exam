@@ -17,7 +17,7 @@ std::string HTTPCallHandler::handleInInstance(const std::string &request) {
     try {
         HTTPRequest parsedRequest = HTTPCallParser::parseRequest(request);
 
-        response = _dispatcher.dispatch(parsedRequest);
+        response = _interceptorChain.callChain(parsedRequest);
     } catch (std::exception &exception) {
         response = _exceptionHandler.handleException(exception);
     }
@@ -26,7 +26,7 @@ std::string HTTPCallHandler::handleInInstance(const std::string &request) {
 }
 
 HTTPCallHandler::HTTPCallHandler(ExceptionHandler exceptionHandler,
-                                 Dispatcher dispatcher)
-        : _exceptionHandler(std::move(exceptionHandler)), _dispatcher(std::move(dispatcher)) {
+                                 HTTPInterceptorChain& interceptorChain)
+        : _exceptionHandler(std::move(exceptionHandler)), _interceptorChain(interceptorChain) {
 
 }
