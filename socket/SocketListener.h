@@ -10,19 +10,21 @@
 
 class SocketListener {
 public:
-    explicit SocketListener(const boost::asio::ip::tcp::endpoint& endpoint);
+    explicit SocketListener(const boost::asio::ip::tcp::endpoint &endpoint);
+
     ~SocketListener();
 
-    boost::signals2::signal<void(boost::asio::ip::tcp::socket*)>& getConnectionSignal();
+    boost::signals2::signal<void(std::shared_ptr<boost::asio::ip::tcp::socket> )> &getConnectionSignal();
+
 private:
     void listenImpl();
 
-    boost::signals2::signal<void(boost::asio::ip::tcp::socket*)> _connectionSignal;
+    boost::signals2::signal<void(std::shared_ptr<boost::asio::ip::tcp::socket> )> _connectionSignal;
 
     boost::asio::io_context _ioContext;
     boost::asio::ip::tcp::acceptor _acceptor;
 
-    std::thread* _listener;
+    std::thread _listener;
     bool _keepGoing = true;
 };
 

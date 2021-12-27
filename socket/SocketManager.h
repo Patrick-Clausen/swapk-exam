@@ -14,30 +14,35 @@
 
 class SocketManager {
 public:
-    SocketManager(boost::asio::ip::tcp::endpoint endpoint, std::function<std::string(std::string)> callHandler);
+    SocketManager(boost::asio::ip::tcp::endpoint endpoint, std::function<std::string(std::string)> &callHandler);
+
     ~SocketManager();
+
 private:
     std::function<std::string(std::string)> _callHandler;
-    void newConnection(boost::asio::ip::tcp::socket*);
 
-    void connectionCompleted(SocketConnection*);
+    void newConnection(std::shared_ptr<boost::asio::ip::tcp::socket>);
+
+    void connectionCompleted(std::shared_ptr<SocketConnection>);
 
     bool transferConnection();
+
     bool cleanupConnection();
 
-    SocketListener* _listener;
+    SocketListener _listener;
 
-    std::vector<SocketConnection*> _connections;
+    std::vector<std::shared_ptr<SocketConnection> > _connections;
     std::mutex _connectionsMutex;
 
     void threadFunction();
-    std::thread* _thread;
+
+    std::thread _thread;
     bool _keepGoing = true;
 
-    std::queue<boost::asio::ip::tcp::socket*> _incomingConnections;
+    std::queue<std::shared_ptr<boost::asio::ip::tcp::socket> > _incomingConnections;
     std::mutex _incomingConnectionsMutex;
 
-    std::queue<SocketConnection*> _completedConnections;
+    std::queue<std::shared_ptr<SocketConnection> > _completedConnections;
     std::mutex _completedConnectionsMutex;
 };
 

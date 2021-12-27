@@ -3,6 +3,7 @@
 #include <iostream>
 #include "RESTBuilder.h"
 
+// No inheritance!
 class interceptor {
 public:
     HTTPResponse intercept(HTTPRequest& request, HTTPInterceptorChain& chain) {

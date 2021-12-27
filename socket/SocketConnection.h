@@ -12,23 +12,21 @@
 
 class SocketConnection {
 public:
-    SocketConnection(boost::asio::ip::tcp::socket* socket, std::function<std::string(std::string)>& callHandler);
+    SocketConnection(std::shared_ptr<boost::asio::ip::tcp::socket> socket, std::function<std::string(std::string)>& callHandler);
     ~SocketConnection();
 
-    void operator()();
+    void operator()(std::shared_ptr<SocketConnection> callbackReference);
 
-    boost::signals2::signal<void(SocketConnection*)>& getCompletionSignal();
+    boost::signals2::signal<void(std::shared_ptr<SocketConnection>)>& getCompletionSignal();
 
 private:
     std::function<std::string(std::string)>& _callHandler;
-    boost::asio::ip::tcp::socket* _socket;
-
-    void connectionFunction();
+    std::shared_ptr<boost::asio::ip::tcp::socket> _socket;
 
     static std::string read(boost::asio::ip::tcp::socket& socket);
     static void write(boost::asio::ip::tcp::socket& socket, std::string message);
 
-    boost::signals2::signal<void(SocketConnection*)> _completionSignal;
+    boost::signals2::signal<void(std::shared_ptr<SocketConnection>)> _completionSignal;
 };
 
 

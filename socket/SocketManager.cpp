@@ -6,32 +6,25 @@
 
 #include <thread>
 #include <chrono>
+#include <utility>
 
 using namespace std::chrono_literals;
 using namespace boost::asio;
 
-SocketManager::SocketManager(ip::tcp::endpoint endpoint, std::function<std::string(std::string)> callHandler)
+SocketManager::SocketManager(ip::tcp::endpoint endpoint, std::function<std::string(std::string)>& callHandler)
         :
-        _callHandler(callHandler),
-        _listener(new SocketListener(endpoint)),
-        _thread(new std::thread(&SocketManager::threadFunction, this)) {
-    _listener->getConnectionSignal().connect([this](auto &&socket) { newConnection(socket); });
+        _callHandler(std::move(callHandler)),
+        _listener(endpoint),
+        _thread(&SocketManager::threadFunction, this) {
+    _listener.getConnectionSignal().connect([this](auto &&socket) { newConnection(socket); });
 }
 
 SocketManager::~SocketManager() {
-    delete _listener;
-
     _keepGoing = false;
-    _thread->join();
-    delete _thread;
+    _thread.join();
 
     // Transfer all remaining connections
     while (transferConnection()) {}
-
-    // Clean up all active connections, including the ones just transferred
-    for (auto connection: _connections) {
-        delete connection;
-    }
 }
 
 void SocketManager::threadFunction() {
@@ -48,35 +41,35 @@ void SocketManager::threadFunction() {
 }
 
 bool SocketManager::transferConnection() {
-    ip::tcp::socket *incomingSocket = nullptr;
+    std::shared_ptr<ip::tcp::socket> incomingSocket;
 
     {
         const std::lock_guard<std::mutex> incomingLock(_incomingConnectionsMutex);
 
         if (!_incomingConnections.empty()) {
-            incomingSocket = _incomingConnections.front();
+            incomingSocket =_incomingConnections.front();
             _incomingConnections.pop();
         }
     }
 
-    if (incomingSocket == nullptr) {
+    if (!incomingSocket) {
         return false;
     }
 
-    auto connection = new SocketConnection(incomingSocket, _callHandler);
+    std::shared_ptr<SocketConnection> connection(new SocketConnection(incomingSocket, _callHandler));
     {
         const std::lock_guard<std::mutex> connectionLock(_connectionsMutex);
 
         _connections.push_back(connection);
     }
     connection->getCompletionSignal().connect([this](auto &&connection) { connectionCompleted(connection); });
-    std::thread([connection]() { (*connection)(); }).detach();
+    std::thread([connection]() { (*connection)(connection); }).detach();
 
     return true;
 }
 
 bool SocketManager::cleanupConnection() {
-    SocketConnection *connectionToClean = nullptr;
+    std::shared_ptr<SocketConnection> connectionToClean;
 
     {
         const std::lock_guard<std::mutex> completedLock(_completedConnectionsMutex);
@@ -87,7 +80,7 @@ bool SocketManager::cleanupConnection() {
         }
     }
 
-    if (connectionToClean == nullptr) {
+    if (!connectionToClean) {
         return false;
     }
 
@@ -99,18 +92,17 @@ bool SocketManager::cleanupConnection() {
             _connections.erase(found);
         }
     }
-    delete connectionToClean;
 
     return true;
 }
 
-void SocketManager::newConnection(ip::tcp::socket *connection) {
+void SocketManager::newConnection(std::shared_ptr<ip::tcp::socket> connection) {
     const std::lock_guard<std::mutex> lock(_incomingConnectionsMutex);
 
     _incomingConnections.push(connection);
 }
 
-void SocketManager::connectionCompleted(SocketConnection *connection) {
+void SocketManager::connectionCompleted(std::shared_ptr<SocketConnection> connection) {
     const std::lock_guard<std::mutex> lock(_completedConnectionsMutex);
 
     _completedConnections.push(connection);
