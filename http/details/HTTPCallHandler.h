@@ -6,13 +6,13 @@
 #define SWAPK_EXAM_HTTPCALLHANDLER_H
 
 #include "../../exception/ExceptionHandler.h"
-#include "../../dispatch/Dispatcher.h"
+#include "../interceptor/HTTPInterceptor.h"
 #include "../HTTPRequest.h"
 #include "../HTTPResponse.h"
 
 class HTTPCallHandler {
 public:
-    HTTPCallHandler(ExceptionHandler exceptionHandler, Dispatcher dispatcher);
+    HTTPCallHandler(ExceptionHandler exceptionHandler, HTTPInterceptorChain& interceptorChain);
 
     std::string handle(const std::string &request);
 
@@ -23,7 +23,7 @@ private:
     std::string handleInInstance(const std::string &request);
 
     ExceptionHandler _exceptionHandler;
-    Dispatcher _dispatcher;
+    HTTPInterceptorChain& _interceptorChain;
 };
 
 

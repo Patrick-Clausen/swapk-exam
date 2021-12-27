@@ -16,7 +16,7 @@ file(GLOB sources
         RESTBuilder.cpp)
 
 
-add_executable(swapk_exam main.cpp ${sources})
+add_executable(swapk_exam main.cpp ${sources} http/interceptor/HTTPInterceptor.h http/interceptor/hasIntercept.h controller-examples/pmr/PMRInterceptor.h controller-examples/pmr/PMRController.h)
 set_target_properties(swapk_exam PROPERTIES LINKER_LANGUAGE CXX)
 target_link_libraries(swapk_exam PRIVATE Threads::Threads)
 target_link_libraries(swapk_exam PRIVATE boost_system)
