@@ -1,7 +1,7 @@
 #!/bin/bash
 LG='\e[1;32m'
 Y='\e[1;33m'
-REQUIRED_PKG=("cmake" "gnome-terminal" "libboost-all-dev")
+packages=("cmake" "gnome-terminal" "libboost-all-dev" "curl")
 SCRIPTDIR="$(dirname "$0")"
 MAKEFILE="$SCRIPTDIR/Makefile"
 
@@ -9,6 +9,20 @@ if [[ $EUID -ne 0 ]]; then
    echo -e "${LG}This script must be run as root${Y}" 
    exec sudo -- "$0" "$@"
 fi
+
+
+for pkg in ${packages[@]}; do
+
+    is_pkg_installed=$(dpkg-query -W --showformat='${Status}\n' ${pkg} | grep "install ok installed")
+
+    if [ "${is_pkg_installed}" == "install ok installed" ]; 
+    then
+      echo ${pkg} is installed.
+    else
+      echo ${pkg} is not installed.
+      sudo apt-get --yes install ${pkg}
+    fi
+done
 
 
 PKG_OK=$(dpkg-query -W --showformat='${Status}\n' $REQUIRED_PKG|grep "install ok installed")
