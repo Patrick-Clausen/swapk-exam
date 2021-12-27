@@ -1,3 +1,0 @@
-/home/einar/skole/swapk-exam/CMakeFiles/rebuild_cache.dir
-/home/einar/skole/swapk-exam/CMakeFiles/edit_cache.dir
-/home/einar/skole/swapk-exam/CMakeFiles/swapk_exam.dir
