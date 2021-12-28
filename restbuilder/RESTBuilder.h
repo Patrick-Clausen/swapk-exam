@@ -12,7 +12,7 @@
 #include "../dispatch/Dispatcher.h"
 #include "../socket/SocketManager.h"
 #include "../http/interceptor/HTTPInterceptor.h"
-#include "./rest.h"
+#include "REST.h"
 
 #include <typeindex>
 #include <string>
