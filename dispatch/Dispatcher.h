@@ -58,7 +58,7 @@ namespace restbuilder::dispatch {
 
         template<typename T>
         static constexpr void validateControllers() {
-            static_assert(meta::hasPath<T>::value,
+            static_assert(meta::hasPath<T>::value || T::Path() != "" || T::Path().find('/', 0),
                           "Controller has no path it should be defined like this: [[nodiscard]] static constexpr std::string_view Path() {return ""path"";}");
             static_assert(meta::detect<meta::hasGet, T, std::string(T::*)(std::string)>::value ||
                           meta::detect<meta::hasPost, T, std::string(T::*)(std::string)>::value ||
