@@ -18,7 +18,7 @@ std::string HTTPCallHandler::handle(std::string&& request) {
         response = _exceptionHandler.handleException(std::move(exception));
     }
 
-    return std::move(HTTPCallParser::stringifyResponse(response));
+    return HTTPCallParser::stringifyResponse(response);
 }
 
 HTTPCallHandler::HTTPCallHandler(exception::ExceptionHandler& exceptionHandler,

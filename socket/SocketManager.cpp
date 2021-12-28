@@ -57,7 +57,7 @@ bool SocketManager::transferConnection() {
         return false;
     }
 
-    std::shared_ptr<SocketConnection> connection(new SocketConnection(incomingSocket, _callHandler));
+    auto connection = std::make_shared<SocketConnection>(incomingSocket, _callHandler);
     {
         const std::lock_guard<std::mutex> connectionLock(_connectionsMutex);
 

@@ -5,7 +5,6 @@
 #ifndef SWAPK_EXAM_HTTPENUMS_H
 #define SWAPK_EXAM_HTTPENUMS_H
 
-#include <map>
 #include <string>
 
 namespace restbuilder::http::enums {
