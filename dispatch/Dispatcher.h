@@ -60,7 +60,7 @@ namespace restbuilder::dispatch {
         static constexpr void validateControllers() {
             static_assert(meta::hasPath<T>::value,
                           "Controller has no path it should be defined like this: [[nodiscard]] static constexpr std::string_view Path() {return ""path"";}");
-            static_assert(T::Path() != "" || T::Path().find('/', 0),
+            static_assert(T::Path() != "" && T::Path().find('/') == 0,
                           "The path needs to have a value and should start with a /");
             static_assert(meta::detect<meta::hasGet, T, std::string(T::*)(std::string)>::value ||
                           meta::detect<meta::hasPost, T, std::string(T::*)(std::string)>::value ||
